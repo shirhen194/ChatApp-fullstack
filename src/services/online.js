@@ -1,5 +1,5 @@
 export function setOnline(item) {
-  return fetch('http://localhost:3333/Online', {
+  return fetch('http://localhost:7005/api/Online', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -10,6 +10,6 @@ export function setOnline(item) {
  }
 
  export function getOnline() {
-  return fetch('http://localhost:3333/Online')
+  return fetch('http://localhost:7005/api/Online')
     .then(data => data.json())
 }
