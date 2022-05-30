@@ -1,21 +1,27 @@
 
     
 function ChatHeader(props){
-    const conversation_mates = props.conversations[props.conversation_id].users;
+    const conversation_mates = props.conversation.users;
     let friend_name="";
-    if (conversation_mates[0] == props.online.userName){
-        friend_name = conversation_mates[1];
+    let friendId = ""
+    if (conversation_mates[0].id == props.online.id){
+        friendId = conversation_mates[1].id;
+        let friend = conversation_mates[0].contacts.find(p => p.id == friendId);
+        if (friend != null){
+            friend_name = friend.name;
+        }
     }
     else{
-        friend_name=conversation_mates[0];
+        friendId=conversation_mates[0].id;
+        let friend = conversation_mates[1].contacts.find(p => p.id == friendId);
+        if (friend != null){
+            friend_name = friend.name;
+        }
     }
-    var index = props.users.findIndex(p => p.userName == friend_name);
-    const friend_display_name = props.users[index].displayName;
-    //const friend_display_name = props.users.findIndex(p => p.userName == friend_name).displayName;
     return(
         <div>
-            <img className='chat-header-img' src={props.users[index].pic} alt=""/>
-            {friend_display_name}
+            <img className='chat-header-img' src="cat_sam.jpeg" alt=""/>
+            {friend_name}
         </div>
     );
 }
