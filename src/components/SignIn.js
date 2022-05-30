@@ -2,10 +2,11 @@ import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom'
 import { useRef, useState } from 'react'
+import { login, getUserById } from '../services/users.js'
 
 function SignIn(props) {
 
-  const userName = useRef(null)
+  const id = useRef(null)
   const password = useRef(null)
 
   const [form, setForm] = useState({})
@@ -24,47 +25,93 @@ function SignIn(props) {
   }
 
   const renderSubmit = () => {
-    if (Object.keys(findMatch()).length > 0) {
-      return (
-        <input type="button"
-          value="WELCOME"
-          onKeyDown={() => handleSubmit(findMatch())}
-          onClick={() => handleSubmit(findMatch())}
-        />
-      )
-    } else {
+    // await login(form).then(res => {
+    //   if (res.data.errors) {
+    //     setErrors(res.data.errors)
+    //   } else {
+    //     setOnline(res.data.user.id)
+    //     props.setUser(res.data.user)
+    //     props.history.push('/chat')
+    //   }
+    // findMatch().then(res => {
+    //   console.log("findMatch")
+    //   console.log(res)
+    // }).catch(err => {
+    //   console.log("err")
+    //   console.log(err)
+    // })
+    // if (Object.keys(findMatch()).length > 0) {
+      // return (
+      //   <input type="button"
+      //     value="WELCOME"
+      //     // onKeyDown={() => handleSubmit(findMatch())}
+      //     onKeyDown={() => handleSubmit()}
+      //     onClick={() => handleSubmit()}
+      //   />
+      // )
+    // } else {
       return (
         <Link to='/chat'>
           <input type="button"
             value="WELCOME"
-            onKeyDown={() => handleSubmit(findMatch())}
-            onClick={() => handleSubmit(findMatch())}
+            onKeyDown={() => handleSubmit()}
+            onClick={() => handleSubmit()}
           />
         </Link>
       )
-    }
+    // }
+    // return ''
   }
 
-  const findMatch = () => {
+  const findMatch = async () => {
     const { name, password } = form
+    console.log("hi im here")
     const newErrors = {}
-    for (var i = 0; i < (props.users).length; i++) {
-      if (props.users[i].userName === name && props.users[i].password === password) return newErrors
+    if (!name) {
+      console.log("hi im here 1")
+      return newErrors
     }
 
-    newErrors.password = 'no account with these credentials!'
+    console.log("hi im here 2")
+
+    //service
+    await getUserById(name).then(res => {
+      console.log(props.token)
+      console.log("props.token")
+      if (res.data.length > 0) {
+        console.log(res.data + "res.data")
+        console.log(res.token + "res.token")
+        // setToken(res.token)
+        if (res.data[0].password !== password.current.value) {
+          newErrors.password = 'Incorrect Password'
+        }
+      } else {
+        newErrors.name = 'no account with these credentials!'
+      }
+    })
 
     return newErrors
   }
 
   const handleSubmit = e => {
-    const newErrors = findMatch()
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-    } else {
-      props.setOnline(userName.current.value)
-    }
-    return false;
+    // const newErrors = findMatch()
+    // if (Object.keys(newErrors).length > 0) {
+    //   setErrors(newErrors)
+    // } else {
+    //  // service
+      login(form.name, form.password).then(res => {
+        props.setToken(res.token)
+        if (res.data.errors) {
+          setErrors(res.data.errors)
+        }
+        props.setStateOnline(res.userName)
+        // else {
+        //   props.setOnline(res.data.user.id)
+        // }
+      })
+
+    // }
+    // return false;
   }
 
   return (
@@ -76,16 +123,16 @@ function SignIn(props) {
       </div>
       <br />
       <div className="login">
-        <input type="text" placeholder="Username" name="userName"
-          ref={userName}
+        <input type="text" placeholder="id" name="id"
+          ref={id}
           onChange={e => setField('name', e.target.value)}
-          /><br />
+        /><br />
         <div className="error" style={{ color: 'red' }}>{errors.name}</div>
         <input type="password" placeholder="Password" name="password"
           ref={password}
           onChange={e => setField('password', e.target.value)}
-          onKeyDown={ e => e.key === 'Enter' ? handleSubmit(findMatch()) : null }
-          /><br />
+          onKeyDown={e => e.key === 'Enter' ? handleSubmit(findMatch()) : null}
+        /><br />
         <div className="error" style={{ color: 'red' }}>{errors.password}</div>
         <div className="remember-checkbox">
           <input type="checkbox" name="remember" />

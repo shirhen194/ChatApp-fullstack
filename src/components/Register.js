@@ -1,19 +1,19 @@
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom'
-import {useRef, useState} from 'react'
-
+import { useRef, useState } from 'react'
+import { register } from '../services/users.js'
 
 
 function Register(props) {
-  const userName = useRef(null)
+  const id = useRef(null)
   const password = useRef(null)
   const password_confirmation = useRef(null)
   let displayName = useRef(null)
   let pro_pic = useRef(null)
 
-  const [ form, setForm ] = useState({})
-  const [ errors, setErrors ] = useState({})
+  const [form, setForm] = useState({})
+  const [errors, setErrors] = useState({})
 
   const setField = (field, value) => {
     setForm({
@@ -21,7 +21,7 @@ function Register(props) {
       [field]: value
     })
     // Check and see if errors exist, and remove them from the error object:
-    if ( !!errors[field] ) setErrors({
+    if (!!errors[field]) setErrors({
       ...errors,
       [field]: null
     })
@@ -30,7 +30,12 @@ function Register(props) {
   const renderSubmit = () => {
     const errors = findFormErrors()
     const error_keys = Object.keys(errors)
-     if (error_keys.length > 0) {
+    if (error_keys.length > 0) {
+      //register user
+      //service
+
+    }
+    if (error_keys.length > 0) {
       return (
         <input type="button"
           value="WELCOME"
@@ -40,7 +45,7 @@ function Register(props) {
       )
     } else {
       return (
-        <Link to='/chat'>
+        <Link to='/'>
           <input type="button"
             value="WELCOME"
             onKeyDown={() => handleSubmit(errors)}
@@ -52,50 +57,59 @@ function Register(props) {
   }
 
   const findFormErrors = () => {
-    const { name, password, password_confirmation, display_Name, pic } = form
+    const { name, password, password_confirmation, display_Name } = form
     const newErrors = {}
 
-    // userName errors
-    if ( !name || name === '' ) newErrors.name = 'enter username!'
-    else if ( !newErrors.name ) {
-      for (var i = 0; i < (props.users).length; i++) {
-        if (props.users[i].userName === name ) newErrors.name = 'username is not available'
-      }
-    }
+    // id errors
+    if (!name || name === '') newErrors.name = 'enter id!'
+    // else if (!newErrors.name) {
+    //   for (var i = 0; i < (props.users).length; i++) {
+    //     if (props.users[i].id === name) newErrors.name = 'id is not available'
+    //   }
+    // }
 
     // password errors
-    if ( !password && password === '') newErrors.password = 'enter password!'
-    else if ( !(/[^0-9]+/.test(password) && /[^A-Za-z]+/.test(password))) newErrors.password = 'password must include numbers and letters!'
-    
+    if (!password && password === '') newErrors.password = 'enter password!'
+    else if (!(/[^0-9]+/.test(password) && /[^A-Za-z]+/.test(password))) newErrors.password = 'password must include numbers and letters!'
+
     // password confirmation errors
-    if ( (password !== password_confirmation) && password ) newErrors.password_confirmation = 'passwords do not match'
-    
+    if ((password !== password_confirmation) && password) newErrors.password_confirmation = 'passwords do not match'
+
     // displayName errors
-    if ( !display_Name || display_Name === '' ) displayName = name
+    if (!display_Name || display_Name === '') displayName = name
     else if (display_Name.length > 30) newErrors.display_Name = 'no more than 30 characters'
     else displayName = display_Name
-    
+
     // profile picture errors
-    if ( !pic || pic === '') pro_pic = "cat_aviad.jpg"
-    else if ( !pic.name.match(/\.(jpg|jpeg|png|gif)$/)) newErrors.pic = 'enter profile pic'
-    else pro_pic = URL.createObjectURL(pic)
-    
+    // if ( !pic || pic === '') pro_pic = "cat_aviad.jpg"
+    // else if ( !pic.name.match(/\.(jpg|jpeg|png|gif)$/)) newErrors.pic = 'enter profile pic'
+    // else pro_pic = URL.createObjectURL(pic)
+
     return newErrors
   }
 
-  const handleSubmit = errors => {
-    if ( Object.keys(errors).length > 0 ) {
+  const handleSubmit = async (errors) => {
+    if (Object.keys(errors).length > 0) {
       setErrors(errors)
     } else {
-      console.log(displayName)
-        props.users.push({                                    
-            userName:userName.current.value,
-            password: password.current.value,
-            displayName: displayName,
-            pic: pro_pic,
-            contacts:[]
-          });
-          props.setOnline(userName.current.value) 
+      //service
+      await register(form.name, form.password).then(res => {
+        console.log(res)
+        if (res.data.errors) {
+          setErrors(res.data.errors)
+        } else {
+          // props.setOnline(res.data.online)
+          console.log(res)
+        }
+      })
+      // props.users.push({
+      //   id: id.current.value,
+      //   password: password.current.value,
+      //   displayName: displayName,
+      //   // pic: pro_pic,
+      //   contacts: []
+      // });
+      // props.setOnline(id.current.value)
     }
     return false;
   }
@@ -108,8 +122,8 @@ function Register(props) {
       </div>
       <br />
       <div className="login">
-        <input type="text" placeholder="Username" name="userName"
-          ref={userName}
+        <input type="text" placeholder="id" name="id"
+          ref={id}
           onChange={e => setField('name', e.target.value)}
         /><br />
         <div className="error" style={{ color: 'red' }}>{errors.name}</div>
@@ -130,14 +144,14 @@ function Register(props) {
           ref={displayName}
           onChange={e => setField('display_Name', e.target.value)}
         /><br />
-        <div className="error" style={{ color: 'red' }}>{errors.display_Name}</div> 
+        <div className="error" style={{ color: 'red' }}>{errors.display_Name}</div>
 
-        <input type="file" placeholder="Enter profile picture" name="pic"
+        {/* <input type="file" placeholder="Enter profile picture" name="pic"
           ref={pro_pic}
           onChange={e => setField('pic', e.target.files[0])}
         /><br />
-        <div className="error" style={{ color: 'red' }}>{errors.pic}</div>
-   
+        <div className="error" style={{ color: 'red' }}>{errors.pic}</div> */}
+
         {renderSubmit()}
         <div style={{ color: 'white' }}>Already a member?&nbsp;
           <Link to="/">

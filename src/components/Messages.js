@@ -59,9 +59,6 @@ function RightMessage(props) {
 }
 
 const Messages = React.forwardRef((props, ref) => {
-    const c_id = (element) => element.id == props.conversation_id;
-    const current_conversation_index = props.conversations.findIndex(c_id);
-
     const createMessage = function (self, user, content, key, type, timeStamp) {
         if (self == user)
             return <RightMessage key={key} content={content} type={type} timeStamp={timeStamp} />
@@ -69,7 +66,7 @@ const Messages = React.forwardRef((props, ref) => {
             return <LeftMessage key={key} content={content} type={type} timeStamp={timeStamp} />
     }
 
-    const messages = props.conversations[current_conversation_index].messages;
+    const messages = props.conversation.messages;
     const {messagesEndRef} = props;
     const scrollToBottom = () => {
         messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -78,7 +75,7 @@ const Messages = React.forwardRef((props, ref) => {
 
     return (
         <div>
-            {props.conversations[current_conversation_index].messages.map(({ user, type, content, timeStamp }, index) => createMessage(props.self, user, content, index, type, timeStamp))}
+            {props.conversation.messages.map(({ user, type, content, timeStamp }, index) => createMessage(props.self, user, content, index, type, timeStamp))}
             <div ref={messagesEndRef} style={{height: '8px'}} />
         </div>
 

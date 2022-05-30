@@ -14,10 +14,20 @@ function Conversations(props, changeConversationId) {
 
   const [showA, setShowA] = useState(false)
   const [errorContact, setErrContact] = useState("")
+  const [convoModal, setConvoModal] = useState(false)
+  const [editContact, setEditContact] = useState(false)
+  const [editContactId, setEditContactId] = useState("")
 
   const contactName = useRef(null)
+  const contactServerName = useRef(null)
+  const contactId = useRef(null)
 
   const toggleShowA = () => setShowA(!showA)
+  const toggleConvoModal = () => setConvoModal(!convoModal)
+  const toggleEditContact = (id) => {
+    setEditContactId(id)
+    setEditContact(!editContact)
+  }
 
   const signOut = () => {
     props.setOnline(null)
@@ -25,24 +35,24 @@ function Conversations(props, changeConversationId) {
 
   const addContact = () => {
     //if already has
-    if (props.online.contacts.includes(contactName.current.value)) {
-      setErrContact("You already have this contact!")
-    }
+    // if (props.online.contacts.includes(contactName.current.value)) {
+    //   setErrContact("You already have this contact!")
+    // }
     //if same name as myself?
-    else if (props.online.displayName === contactName.current.value) {
-      setErrContact("You can't add yourself!")
-    }
-    else if (contactName.current.value === "") {
-      setErrContact("Please enter a name!")
-    }
-    else if (!props.users.find(u => u.displayName === contactName.current.value)) {
-      setErrContact("This user does not exist!")
-    }
-    else {
+    // else if (props.online.displayName === contactName.current.value) {
+    //   setErrContact("You can't add yourself!")
+    // }
+    // else if (contactName.current.value === "") {
+    //   setErrContact("Please enter a name!")
+    // }
+    // else if (!props.users.find(u => u.displayName === contactName.current.value)) {
+    //   setErrContact("This user does not exist!")
+    // }
+    // else {
       setErrContact("")
-      props.addConversation(contactName.current.value)
+      props.addContact(contactName.current.value, contactId.current.value)
       setShowA(false)
-    }
+    // }
   }
 
   return (
@@ -53,8 +63,11 @@ function Conversations(props, changeConversationId) {
           src={props.online.pic}
           alt="profile_pic"
         />
-        <div className="convo-btn" onClick={toggleShowA} >
+        <div className="convo-btn" onClick={toggleConvoModal} >
           Add Conversation
+        </div>
+        <div className="convo-btn" onClick={toggleShowA} >
+          Add Contact
         </div>
         <div className="convo-btn">
           <Link to="/" onClick={signOut} style={{
@@ -77,11 +90,56 @@ function Conversations(props, changeConversationId) {
         </Toast.Header>
         <Toast.Body>
           <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Id of contact:</Form.Label>
+            <Form.Control type="id" placeholder="id of contact" ref={contactId} />
             <Form.Label>Enter friend's contact name (display name):</Form.Label>
-            <Form.Control type="userName" placeholder="Display name" ref={contactName} />
+            <Form.Control type="id" placeholder="Display name" ref={contactName} />
           </Form.Group>
           <div className="error" style={{ color: 'red' }}>{errorContact}</div>
           <Button variant="primary" type="submit" onClick={addContact}>
+            Add
+          </Button>
+        </Toast.Body>
+      </Toast>
+      <Toast show={convoModal} onClose={toggleConvoModal}>
+        <Toast.Header>
+          <img
+            src="holder.js/20x20?text=%20"
+            className="rounded me-3"
+            alt=""
+          />
+          <strong className="me-auto">New conversation</strong>
+        </Toast.Header>
+        <Toast.Body>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+
+            <Form.Label>Enter friend's contact name (display name):</Form.Label>
+            <Form.Control type="id" placeholder="Display name" ref={contactName} />
+          </Form.Group>
+          <div className="error" style={{ color: 'red' }}>{errorContact}</div>
+          <Button variant="primary" type="submit" onClick={() => props.addConversation(contactName)}>
+            Add
+          </Button>
+        </Toast.Body>
+      </Toast>
+      <Toast show={editContact} onClose={() => toggleEditContact(editContactId)}>
+        <Toast.Header>
+          <img
+            src="holder.js/20x20?text=%20"
+            className="rounded me-3"
+            alt=""
+          />
+          <strong className="me-auto">Edit contact details</strong>
+        </Toast.Header>
+        <Toast.Body>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Name:</Form.Label>
+            <Form.Control type="id" placeholder="Name" ref={contactName} />
+            <Form.Label>Server:</Form.Label>
+            <Form.Control type="id" placeholder="Server" ref={contactServerName} />
+          </Form.Group>
+          <div className="error" style={{ color: 'red' }}>{errorContact}</div>
+          <Button variant="primary" type="submit" onClick={() => props.editContact(editContactId, contactName, contactServerName)}>
             Add
           </Button>
         </Toast.Body>
@@ -94,33 +152,31 @@ function Conversations(props, changeConversationId) {
   );
 
   function renderConvos() {
-    return props.conversations.filter(c => {
-      return (c.users.includes(props.online.userName));
-    }).map(cf => {
-      let otherUserName = cf.users[0] !== props.online.userName ? cf.users[0] : cf.users[1];
-      let otherUser = props.users.find(u => u.userName === otherUserName);
+    if (props.contacts) {
+      return props.contacts.map(c => {
       return (
-        <div key={otherUser.displayName} className="convo"  onClick={()=> props.changeConversationId(cf.id)}>
-          <img className="convos-pic" src={otherUser.pic} alt="profile_pic" />
+        <div key={c.name} className="convo" onClick={() => props.changeConversationId(c.id)}>
+          <img className="convos-pic" src="cat_sam/jpeg" alt="profile_pic" />
           <div className="convo-message-wrap">
-            <div id="convo-name">{otherUser.displayName}</div>
-            <div style={{display: 'flex', flexDirection:'column', justifyContent: 'space-between', width: '100%'}}>
-            {cf.messages.length > 0 && cf.messages.at(-1).type === 'text' && <div id="convo-last-message">
-              {cf.messages.length > 0 && cf.messages.at(-1).content.length > 20 ? cf.messages.at(-1).content.slice(0, 20) + "..." : cf.messages.at(-1).content}
+            <div id="convo-name">{c.name}</div>
+            <img src="pencil.png" alt="pencil" style={{ width: '3vw', height: '5vh' }} onClick={() => toggleEditContact(c)} />
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}>
+              {c.messages.length > 0 && c.messages.at(-1).type === 'text' && <div id="convo-last-message">
+                {c.messages.length > 0 && c.messages.at(-1).content.length > 20 ? c.messages.at(-1).content.slice(0, 20) + "..." : c.messages.at(-1).content}
               </div>}
-            {cf.messages.length > 0 && cf.messages.at(-1).type === 'video' && <div id="convo-last-message">video</div>}
-            {cf.messages.length > 0 && cf.messages.at(-1).type === 'recording' && <div id="convo-last-message">voice recording</div>}
-            {cf.messages.length > 0 && cf.messages.at(-1).type === 'img' && <div id="convo-last-message">image</div>}
-            {cf.messages.length > 0 && <div className="convo-time">{cf.messages.at(-1).timeStamp}</div>}
+              {c.messages.length > 0 && c.messages.at(-1).type === 'video' && <div id="convo-last-message">video</div>}
+              {c.messages.length > 0 && c.messages.at(-1).type === 'recording' && <div id="convo-last-message">voice recording</div>}
+              {c.messages.length > 0 && c.messages.at(-1).type === 'img' && <div id="convo-last-message">image</div>}
+              {c.messages.length > 0 && <div className="convo-time">{c.messages.at(-1).timeStamp}</div>}
             </div>
           </div>
         </div>
       );
-    });
+    }) }
+    else { 
+      return <div>Loading...</div>
+    }
   }
 }
 
 export default Conversations;
-/**
- * {cf.messages.at(-1).timeStamp && <div id="convo-last-message">{cf.messages.at(-1).timeStamp}</div>}
- */
