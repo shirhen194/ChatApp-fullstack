@@ -62,7 +62,7 @@ export function conversationInvitation(invitation, token) {
           'Content-Type': 'application/json',
           'Authorization': "Bearer " + token
         },
-        body: JSON.stringify({ invitation })
+        body: JSON.stringify( invitation )
       })
         .then(data => data.json())
 }
@@ -75,7 +75,7 @@ export function transfer(message, token) {
           'Content-Type': 'application/json',
           'Authorization': "Bearer " + token
         },
-        body: JSON.stringify({ message })
+        body: JSON.stringify( message )
       })
         .then(data => data.json())
 }
