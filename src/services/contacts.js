@@ -3,7 +3,7 @@ export function getContacts(token) {
     return fetch('https://localhost:7005/api/contacts',{
         method: 'GET',
         headers: {
-          Authorization: "Bearer " + token
+          'Authorization': "Bearer " + token
         },
     })
     .then(data => data.json())
@@ -17,7 +17,7 @@ export function addContact(contact, token) {
           'Content-Type': 'application/json',
           'Authorization': "Bearer " + token
         },
-        body: JSON.stringify({ contact })
+        body: JSON.stringify(contact)
       })
         .then(data => data.json())
 }
@@ -30,7 +30,7 @@ export function updateContact(contact, token) {
           'Content-Type': 'application/json',
           'Authorization': "Bearer " + token
         },
-        body: JSON.stringify({ contact })
+        body: JSON.stringify( contact )
       })
         .then(data => data.json())
 }
