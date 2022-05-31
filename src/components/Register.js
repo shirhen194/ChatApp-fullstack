@@ -94,12 +94,10 @@ function Register(props) {
     } else {
       //service
       await register(form.name, form.password).then(res => {
-        console.log(res)
-        if (res.data.errors) {
+        if (res.errors) {
           setErrors(res.data.errors)
         } else {
           // props.setOnline(res.data.online)
-          console.log(res)
         }
       })
       // props.users.push({
