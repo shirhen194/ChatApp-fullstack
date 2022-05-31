@@ -138,10 +138,10 @@ function App() {
   }
 
 
-  const addContactByName = async (name, contactId) => {
+  const addContactByName = async (name, contactId, server) => {
     //service
     if(name !== '' && contactId !== '' && token != '') {
-    await addContact({ id: contactId, name: name, server: "https://localhost:7005" }, token)
+    await addContact({ Id: contactId, Name: name, Server: "https://localhost:7005" }, token)
     //!!!TODO: add functionality to add if contact is not a user?!
     }
   }

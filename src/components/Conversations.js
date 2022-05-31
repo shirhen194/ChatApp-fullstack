@@ -49,9 +49,9 @@ function Conversations(props, changeConversationId) {
     //   setErrContact("This user does not exist!")
     // }
     // else {
-      setErrContact("")
-      props.addContact(contactName.current.value, contactId.current.value)
-      setShowA(false)
+    setErrContact("")
+    props.addContact(contactName.current.value, contactId.current.value, contactServerName.current.value)
+    setShowA(false)
     // }
   }
 
@@ -90,10 +90,12 @@ function Conversations(props, changeConversationId) {
         </Toast.Header>
         <Toast.Body>
           <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Id of contact:</Form.Label>
+            <Form.Label>Id of contact:</Form.Label>
             <Form.Control type="id" placeholder="id of contact" ref={contactId} />
             <Form.Label>Enter friend's contact name (display name):</Form.Label>
             <Form.Control type="id" placeholder="Display name" ref={contactName} />
+            <Form.Label>Server:</Form.Label>
+            <Form.Control type="id" placeholder="Server" ref={contactServerName} />
           </Form.Group>
           <div className="error" style={{ color: 'red' }}>{errorContact}</div>
           <Button variant="primary" type="submit" onClick={addContact}>
@@ -154,26 +156,27 @@ function Conversations(props, changeConversationId) {
   function renderConvos() {
     if (props.contacts) {
       return props.contacts.map(c => {
-      return (
-        <div key={c.name} className="convo" onClick={() => props.changeConversationId(c.id)}>
-          <img className="convos-pic" src="cat_sam/jpeg" alt="profile_pic" />
-          <div className="convo-message-wrap">
-            <div id="convo-name">{c.name}</div>
-            <img src="pencil.png" alt="pencil" style={{ width: '3vw', height: '5vh' }} onClick={() => toggleEditContact(c)} />
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}>
-              {c.messages.length > 0 && c.messages.at(-1).type === 'text' && <div id="convo-last-message">
-                {c.messages.length > 0 && c.messages.at(-1).content.length > 20 ? c.messages.at(-1).content.slice(0, 20) + "..." : c.messages.at(-1).content}
-              </div>}
-              {c.messages.length > 0 && c.messages.at(-1).type === 'video' && <div id="convo-last-message">video</div>}
-              {c.messages.length > 0 && c.messages.at(-1).type === 'recording' && <div id="convo-last-message">voice recording</div>}
-              {c.messages.length > 0 && c.messages.at(-1).type === 'img' && <div id="convo-last-message">image</div>}
-              {c.messages.length > 0 && <div className="convo-time">{c.messages.at(-1).timeStamp}</div>}
+        return (
+          <div key={c.name} className="convo" onClick={() => props.changeConversationId(c.id)}>
+            <img className="convos-pic" src="cat_sam/jpeg" alt="profile_pic" />
+            <div className="convo-message-wrap">
+              <div id="convo-name">{c.name}</div>
+              <img src="pencil.png" alt="pencil" style={{ width: '3vw', height: '5vh' }} onClick={() => toggleEditContact(c)} />
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}>
+                {c.messages.length > 0 && c.messages.at(-1).type === 'text' && <div id="convo-last-message">
+                  {c.messages.length > 0 && c.messages.at(-1).content.length > 20 ? c.messages.at(-1).content.slice(0, 20) + "..." : c.messages.at(-1).content}
+                </div>}
+                {c.messages.length > 0 && c.messages.at(-1).type === 'video' && <div id="convo-last-message">video</div>}
+                {c.messages.length > 0 && c.messages.at(-1).type === 'recording' && <div id="convo-last-message">voice recording</div>}
+                {c.messages.length > 0 && c.messages.at(-1).type === 'img' && <div id="convo-last-message">image</div>}
+                {c.messages.length > 0 && <div className="convo-time">{c.messages.at(-1).timeStamp}</div>}
+              </div>
             </div>
           </div>
-        </div>
-      );
-    }) }
-    else { 
+        );
+      })
+    }
+    else {
       return <div>Loading...</div>
     }
   }
