@@ -10,7 +10,7 @@ export function sendMessage(message, contactId, token) {
         .then(data => data.json())
 }
 
-export function getConveration(contactId, token) {
+export function getConverationMessages(contactId, token) {
     return fetch('https://localhost:7005/api/contacts/' + contactId + '/messages', {
         method: 'GET',
         headers: {
@@ -18,6 +18,16 @@ export function getConveration(contactId, token) {
         },
     })
     .then(data => data.json())
+}
+
+export function getConveration(contactId, token) {
+  return fetch('https://localhost:7005/api/contacts/' + contactId + '/conversation', {
+      method: 'GET',
+      headers: {
+        'Authorization': "Bearer " + token
+      },
+  })
+  .then(data => data.json())
 }
 
 export function getMessage(contactId, messageId, token) {

@@ -15,7 +15,7 @@ class ChatScreen extends React.Component {
 
   changeConversationId = async (c_id) => {
     await getConveration(c_id, this.props.token).then((res) => {
-      this.setState({ conversation_id: res.data.id, conversation: res.data })
+      this.setState({ conversation_id: res.id, conversation: res })
     })
   }
 
