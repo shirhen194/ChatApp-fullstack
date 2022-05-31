@@ -114,6 +114,7 @@ function App() {
     }
     if (c_index !== -1 && new_message.content !== '') {
       await sendMessage(new_message, to, token);
+      setShouldUpdate(!shouldUpdate);
       await getAllOnlineConversations(token)
         .then(convos => {
           setConversations(convos)

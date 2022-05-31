@@ -9,13 +9,13 @@ class ChatScreen extends React.Component {
 
   constructor() {
     super()
-    this.state = { conversation_id: 0, conversation: {} }
+    this.state = { conversation_id: 0, conversation: {}, contactId: '' }
     this.changeConversationId = this.changeConversationId.bind(this)
   }
 
   changeConversationId = async (c_id) => {
     await getConveration(c_id, this.props.token).then((res) => {
-      this.setState({ conversation_id: res.id, conversation: res })
+      this.setState({ conversation_id: res.id, conversation: res, contactId: c_id })
     })
   }
 
@@ -34,6 +34,7 @@ class ChatScreen extends React.Component {
               addMessage={this.props.addMessage}
               online={this.props.online}
               conversation={this.state.conversation}
+              contactId={this.state.contactId}
             >
             </Chat>
           </div>

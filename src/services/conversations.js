@@ -1,4 +1,5 @@
 export function sendMessage(message, contactId, token) {
+  console.log("ds,jfn")
     return fetch('https://localhost:7005/api/contacts/' + contactId + '/messages', {
         method: 'POST',
         headers: {
