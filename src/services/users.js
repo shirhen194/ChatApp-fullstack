@@ -33,7 +33,6 @@ export function getUserById(id, token) {
     }
   })
     .then(data => {
-      console.log(data)
       return data.json()
     })
 }

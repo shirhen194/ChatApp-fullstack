@@ -16,9 +16,9 @@ import { register, getUserById } from './services/users.js'
 function App() {
 
   // const [users, setUsers] = useState(dummyUsers);
-  const [online, setStateOnline] = useState('Shir1');
-  const [conversations, setConversations] = useState(dummyConversations);
-  const [contacts, setContacts] = useState(dummyConversations);
+  const [online, setStateOnline] = useState({id:'s'});
+  const [conversations, setConversations] = useState([]);
+  const [contacts, setContacts] = useState([]);
   const [shouldUpdate, setShouldUpdate] = useState(false);
 
   const [token, setToken] = useState("");
@@ -49,38 +49,40 @@ function App() {
   // }, [shouldUpdate])
 
 
-  //   useEffect(() => {
-  //   let mounted = true;
-  //   getAllOnlineConversations(token)
-  //     .then(convos => {
-  //       if(mounted) {
-  //         setConversations(convos)
-  //         console.log("setConversations")
-  //         // setShouldUpdate(false)
-  //       }
-  //     })
-  //   return () => mounted = false;
-  // }, [shouldUpdate])
+    useEffect(() => {
+    // let mounted = true;
+
+    async function oConvos() {
+    if (token != '') {
+      //service
+    getAllOnlineConversations(token)
+      .then(convos => {
+        // if(mounted) {
+          setConversations(convos)                                       
+          // setShouldUpdate(false)
+        // }
+      })
+    }}
+    oConvos()
+  }, [token])
 
   useEffect(() => {
-    console.log("Dsfsdfsdf")
-    let mounted = true;
-    async function kaka() {
+    // let mounted = true;
+    async function gContacts() {
     if (token != '') {
       //service
       await getContacts(token)
         .then(contacts => {
           // if(mounted) {
           setContacts(contacts)
-          console.log(contacts)
-          console.log("setContacts")
+          // console.log(contacts)
           // setShouldUpdate(false)
           // }
         })
     }}
-    kaka()
+    gContacts()
     // return () => mounted = false;
-  }, [token])
+  }, [token, shouldUpdate])
 
 
   // componentDidMount = async () => {
@@ -112,6 +114,7 @@ function App() {
     }
     if (c_index !== -1 && new_message.content !== '') {
       await sendMessage(new_message, to, token);
+      setShouldUpdate(!shouldUpdate);
       await getAllOnlineConversations(token)
         .then(convos => {
           setConversations(convos)
@@ -143,6 +146,7 @@ function App() {
     if(name !== '' && contactId !== '' && token != '') {
     await addContact({ Id: contactId, Name: name, Server: "https://localhost:7005" }, token)
     //!!!TODO: add functionality to add if contact is not a user?!
+    setShouldUpdate(!shouldUpdate);
     }
   }
 
@@ -157,21 +161,19 @@ function App() {
     let contact = { id: editContactId }
     if (contactName) {
       contact.name = contactName
+    } else {
+      contact.name = ""
     }
     if (contactServerName) {
       contact.server = contactServerName
+    } else {
+      contact.server = ""
     }
-
+    
+    
     await updateContact(contact, token).then(() => setShouldUpdate(!shouldUpdate))
+    setShouldUpdate(!shouldUpdate)
   }
-
-  const kajsdh = async () => {
-    await register("dgasasddsd", "ssdfdas").then((res) => {
-      setToken(res.token)
-      console.log(token)
-    })
-  }
-
 
   return (
     <BrowserRouter>
@@ -200,6 +202,7 @@ function App() {
             addMessage={addMessage}
             editContact={editContact}
             token={token}
+            contacts={contacts}
           />}>
         </Route>}
         <Route path="/register" element={

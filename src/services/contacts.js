@@ -1,5 +1,4 @@
 export function getContacts(token) {
-  console.log(token)
     return fetch('https://localhost:7005/api/contacts',{
         method: 'GET',
         headers: {
@@ -24,7 +23,7 @@ export function addContact(contact, token) {
 
 
 export function updateContact(contact, token) {
-    return fetch('https://localhost:7005/api/contacts' + contact.id, {
+    return fetch('https://localhost:7005/api/contacts/' + contact.id, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +43,7 @@ export function getContact(contactId) {
 }
 
 export function deleteContact(contactId, token) {
-    return fetch('https://localhost:7005/api/contacts' + contactId, {
+    return fetch('https://localhost:7005/api/contacts/' + contactId, {
         method: 'DELETE',
         headers: {
           'Authorization': "Bearer " + token

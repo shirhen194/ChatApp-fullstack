@@ -65,24 +65,17 @@ function SignIn(props) {
 
   const findMatch = async () => {
     const { name, password } = form
-    console.log("hi im here")
     const newErrors = {}
     if (!name) {
-      console.log("hi im here 1")
       return newErrors
     }
 
-    console.log("hi im here 2")
 
     //service
     await getUserById(name).then(res => {
-      console.log(props.token)
-      console.log("props.token")
-      if (res.data.length > 0) {
-        console.log(res.data + "res.data")
-        console.log(res.token + "res.token")
+      if (res) {
         // setToken(res.token)
-        if (res.data[0].password !== password.current.value) {
+        if (res.password !== password.current.value) {
           newErrors.password = 'Incorrect Password'
         }
       } else {
@@ -101,10 +94,7 @@ function SignIn(props) {
     //  // service
       login(form.name, form.password).then(res => {
         props.setToken(res.token)
-        if (res.data.errors) {
-          setErrors(res.data.errors)
-        }
-        props.setStateOnline(res.userName)
+        props.setStateOnline(res)
         // else {
         //   props.setOnline(res.data.user.id)
         // }

@@ -18,6 +18,8 @@ function ChatHeader(props){
             friend_name = friend.name;
         }
     }
+
+
     return(
         <div>
             <img className='chat-header-img' src="cat_sam.jpeg" alt=""/>

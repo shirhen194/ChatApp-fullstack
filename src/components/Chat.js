@@ -51,7 +51,10 @@ function Chat(props) {
         addMessage={addMessage}
         conversation_id={props.conversation_id}
         modals={modals}
-        scrollToBottom={scrollToBottom}></ChatInput>
+        scrollToBottom={scrollToBottom}
+        onlineId={props.online.id}
+        contactId={props.contactId}
+        ></ChatInput>
     </div>
   );
 }
