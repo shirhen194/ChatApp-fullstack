@@ -11,6 +11,7 @@ function SignIn(props) {
 
   const [form, setForm] = useState({})
   const [errors, setErrors] = useState({})
+  
 
   const setField = (field, value) => {
     setForm({
@@ -75,32 +76,36 @@ function SignIn(props) {
     await getUserById(name).then(res => {
       if (res) {
         // setToken(res.token)
-        if (res.password !== password.current.value) {
+        if (res.password !== password) {
           newErrors.password = 'Incorrect Password'
         }
       } else {
         newErrors.name = 'no account with these credentials!'
       }
+    }).catch(err => {
+      newErrors.name = 'no account with these credentials!'
     })
-
-    return newErrors
+    // return newErrors
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return newErrors
+    } 
   }
 
   const handleSubmit = e => {
-    // const newErrors = findMatch()
-    // if (Object.keys(newErrors).length > 0) {
-    //   setErrors(newErrors)
-    // } else {
-    //  // service
+     // service
+    findMatch().then(newErrors => {
+    if (!newErrors || Object.keys(newErrors).length == 0) {
       login(form.name, form.password).then(res => {
         props.setToken(res.token)
         props.setStateOnline(res)
         // else {
         //   props.setOnline(res.data.user.id)
         // }
+      }).catch((err, res) => {
+        console.log("err in login")
       })
-
-    // }
+    }})
     // return false;
   }
 

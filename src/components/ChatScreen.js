@@ -5,11 +5,12 @@ import Chat from './Chat';
 import React from 'react';
 import WelcomeScreenConversation from './WelcomeScreenConversation';
 import { getConveration } from '../services/conversations';
+
 class ChatScreen extends React.Component {
 
   constructor() {
     super()
-    this.state = { conversation_id: 0, conversation: {}, contactId: '' }
+    this.state = { conversation_id: 0, conversation: {}, contactId: '', update: false }
     this.changeConversationId = this.changeConversationId.bind(this)
   }
 
@@ -17,6 +18,14 @@ class ChatScreen extends React.Component {
     await getConveration(c_id, this.props.token).then((res) => {
       this.setState({ conversation_id: res.id, conversation: res, contactId: c_id })
     })
+  }
+
+  setUpdateConvo  = async () => {
+    await this.changeConversationId(this.state.contactId)
+  }
+
+  getConveration = () => {
+    return this.state.conversation
   }
 
   render() {
@@ -35,6 +44,8 @@ class ChatScreen extends React.Component {
               online={this.props.online}
               conversation={this.state.conversation}
               contactId={this.state.contactId}
+              setUpdateConvo={this.setUpdateConvo}
+              getConveration={this.getConveration}
             >
             </Chat>
           </div>
