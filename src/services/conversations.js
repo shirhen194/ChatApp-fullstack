@@ -6,7 +6,7 @@ export function sendMessage(message, contactId, token) {
           'Content-Type': 'application/json',
           'Authorization': "Bearer " + token
         },
-        body: JSON.stringify({ message })
+        body: JSON.stringify( message )
       })
         .then(data => data.json())
 }
@@ -48,7 +48,7 @@ export function updateMessage(message, contactId, messageId, token) {
           'Content-Type': 'application/json',
           'Authorization': "Bearer " + token
         },
-        body: JSON.stringify({ message })
+        body: JSON.stringify( message )
       })
         .then(data => data.json())
 }
