@@ -100,20 +100,21 @@ function App() {
     // TODO: change c_index to find the right index by c_id
     //TODO: add user information to new message
     //time and date stamp
-    let timeStamp = new Date().toLocaleTimeString()
-    let timeWithootSeconds = timeStamp.substring(0, timeStamp.length - 3)
+    let Created = new Date().toLocaleTimeString()
+    let timeWithootSeconds = Created.substring(0, Created.length - 3)
     let dateStamp = new Date().toLocaleDateString()
     let dateWithootYear = dateStamp.substring(0, dateStamp.length - 5)
     let c_index = c_id;
-    let to = conversations[c_index].find(user => user.id !== localStorage.getItem('userId'))
+    // let to = conversations[c_index].find(user => user.id !== localStorage.getItem('userId'))
     let new_message = {
-      user: online.displayName,
-      type: type,
-      content: message,
-      timeStamp: timeWithootSeconds + " " + dateWithootYear
+      Author: online,
+      Type: type,
+      Content: message,
+      // Created: timeWithootSeconds + " " + dateWithootYear,
+      ConversationId: c_id + ""
     }
     if (c_index !== -1 && new_message.content !== '') {
-      await sendMessage(new_message, to, token);
+      await sendMessage(new_message, online.id, token);
       setShouldUpdate(!shouldUpdate);
       await getAllOnlineConversations(token)
         .then(convos => {

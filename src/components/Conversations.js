@@ -182,7 +182,7 @@ function Conversations(props, changeConversationId) {
       //           {c.messages.length > 0 && c.messages.at(-1).type === 'video' && <div id="convo-last-message">video</div>}
       //           {c.messages.length > 0 && c.messages.at(-1).type === 'recording' && <div id="convo-last-message">voice recording</div>}
       //           {c.messages.length > 0 && c.messages.at(-1).type === 'img' && <div id="convo-last-message">image</div>}
-      //           {c.messages.length > 0 && <div className="convo-time">{c.messages.at(-1).timeStamp}</div>}
+      //           {c.messages.length > 0 && <div className="convo-time">{c.messages.at(-1).Created}</div>}
       //         </div>
       //       </div>
       //     </div>
