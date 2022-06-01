@@ -3,15 +3,64 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown, DropdownButton, Stack } from 'react-bootstrap';
-import { useRef, useState } from "react";
+import { useRef, useEffect, useState } from "react";
+import { HubConnectionBuilder } from '@microsoft/signalr';
+import { getOnline } from '../services/users';
+import { getConverationMessages, transfer } from '../services/conversations.js'
 
 function ChatInput(props) {
   const message = useRef("");
+  const [ connection, setConnection ] = useState(null);
   //const [input, setInput]= useState("");
   // const sendMessageAndClearInput= ()=>{
   //   props.addMessage(input.current.value,props.conversation_id, 'text');
   //   setInput(()=>"")
   // }
+
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+        .withUrl('https://localhost:7005/myHub')
+        .withAutomaticReconnect()
+        .build();
+
+    setConnection(newConnection);
+}, []);
+
+
+useEffect(() => {
+  if (connection) {
+      connection.start()
+          .then(result => {
+              console.log('Connected!');
+
+              connection.on('Receive', async(fromId, toId) => {
+                if (props.onlineId === toId) {
+                  getConverationMessages(fromId, props.onlineToken)
+                }
+              });
+          })
+          .catch(e => console.log('Connection failed: ', e));
+  }
+}, [connection]);
+
+
+const sendMessage = async () => {
+  let fromId = props.onlineId;
+  let toId = props.contactId;
+  if (connection.connectionStarted) {
+      try {
+          await connection.invoke('send', fromId, toId);
+      }
+      catch(e) {
+          console.log(e);
+      }
+  }
+  else {
+      alert('No connection to server yet.');
+  }
+}
+
+
 
   let { modals, scrollToBottom } = props;
   return (
@@ -24,6 +73,8 @@ function ChatInput(props) {
             onKeyPress={(e) => {
               if (e.key === 'Enter' ) {
                 props.addMessage(message.current.value, props.conversation_id, 'text')
+                transfer(message.current.value, props.onlineToken) 
+                sendMessage(props.onlineId, props.contactId)
                 message.current.value = ""
                 scrollToBottom()
               }
@@ -32,6 +83,8 @@ function ChatInput(props) {
           <Button variant="secondary"
             onClick={() => {
               props.addMessage(message.current.value, props.conversation_id, 'text')
+              transfer(message.current.value, props.onlineToken) 
+              sendMessage(props.onlineId, props.contactId)
               message.current.value = ""
               scrollToBottom()
             }}
