@@ -24,43 +24,15 @@ function App() {
   const [token, setToken] = useState("");
   // const [onlineContacts, setContacts] = useState(dummyUsers);
 
-  // useEffect(() => {
-  //   let mounted = true;
-  //   getOnline()
-  //     .then(onlineNow => {
-  //       if(mounted) {
-  //         setStateOnline(onlineNow)
-  //       }
-  //     })
-  //   return () => mounted = false;
-  // }, [online])
-
-  // useEffect(() => {
-  //   let mounted = true;
-  //   getAllOnlineConversations(token)
-  //     .then(convos => {
-  //       if(mounted) {
-  //         setConversations(convos)
-  //         console.log("setConversations")
-  //         // setShouldUpdate(false)
-  //       }
-  //     })
-  //   return () => mounted = false;
-  // }, [shouldUpdate])
-
 
     useEffect(() => {
-    // let mounted = true;
 
     async function oConvos() {
     if (token != '') {
       //service
     await getAllOnlineConversations(token)
       .then(convos => {
-        // if(mounted) {
           setConversations(convos)                                       
-          // setShouldUpdate(false)
-        // }
       })
     }}
     oConvos()
@@ -156,6 +128,11 @@ function App() {
     // let user = users.find(u => u.id === localStorage.getItem('userId'))
     await conversationInvitation({ from: online.id, to: contact.id, server: contact.server }, token)
     setShouldUpdate(!shouldUpdate)
+    await getAllOnlineConversations(token)
+      .then(convos => {
+          setConversations(convos)                                       
+      })
+    
   }
 
   const editContact = async (editContactId, contactName, contactServerName) => {
