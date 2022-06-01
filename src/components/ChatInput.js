@@ -9,11 +9,14 @@ import { getOnline } from '../services/users';
 import { getConverationMessages, transfer } from '../services/conversations.js'
 
 function ChatInput(props) {
+  let { modals, scrollToBottom, setUpdateConvo, setUpdate } = props;
+
   const message = useRef("");
   const [ connection, setConnection ] = useState(null);
   //const [input, setInput]= useState("");
   // const sendMessageAndClearInput= ()=>{
   //   props.addMessage(input.current.value,props.conversation_id, 'text');
+  //  setUpdateConvo()
   //   setInput(()=>"")
   // }
 
@@ -62,7 +65,7 @@ const sendMessage = async () => {
 
 
 
-  let { modals, scrollToBottom } = props;
+  //let { modals, scrollToBottom } = props;
   return (
     <div className='message-input'>
       <>
@@ -71,12 +74,13 @@ const sendMessage = async () => {
             className="me-auto"
             placeholder="Type your message here..."
             onKeyPress={(e) => {
-              if (e.key === 'Enter' ) {
+              if (e.key === 'Enter') {
                 props.addMessage(message.current.value, props.conversation_id, 'text')
                 transfer(message.current.value, props.onlineToken) 
                 sendMessage(props.onlineId, props.contactId)
                 message.current.value = ""
                 scrollToBottom()
+                setUpdateConvo()
               }
             }}
           />
@@ -87,6 +91,7 @@ const sendMessage = async () => {
               sendMessage(props.onlineId, props.contactId)
               message.current.value = ""
               scrollToBottom()
+              setUpdateConvo()
             }}
           >Send</Button>
           <div className="vr" />

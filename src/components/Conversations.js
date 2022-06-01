@@ -119,7 +119,11 @@ function Conversations(props, changeConversationId) {
             <Form.Control type="id" placeholder="Display name" ref={contactName} />
           </Form.Group>
           <div className="error" style={{ color: 'red' }}>{errorContact}</div>
-          <Button variant="primary" type="submit" onClick={() => props.addConversation(contactName.current.value)}>
+          <Button variant="primary" type="submit" onClick={() => {
+            props.addConversation(contactName.current.value)
+            contactName.current.value = ""
+            toggleConvoModal(false)
+          }}>
             Add
           </Button>
         </Toast.Body>
@@ -141,7 +145,10 @@ function Conversations(props, changeConversationId) {
             <Form.Control type="id" placeholder="Server" ref={contactServerName} />
           </Form.Group>
           <div className="error" style={{ color: 'red' }}>{errorContact}</div>
-          <Button variant="primary" type="submit" onClick={() => props.editContact(editContactId, contactName.current.value, contactServerName.current.value)}>
+          <Button variant="primary" type="submit" onClick={() => {
+            props.editContact(editContactId, contactName.current.value, contactServerName.current.value)
+            setEditContact(!editContact)
+          }}>
             Add
           </Button>
         </Toast.Body>
@@ -155,58 +162,25 @@ function Conversations(props, changeConversationId) {
 
   function renderConvos() {
 
-    if (props.contacts) {
-      // return props.conversations.map(c => {
-      //   // let contact = props.contacts.find(c2 => c2.id === c.contactId)
-      //   const conversation_mates = c.users;
-      //   let contact
-      //   let friendId = ""
-      //   if (conversation_mates[0].id == props.online.id) {
-      //     friendId = conversation_mates[1].id;
-      //     contact = conversation_mates[0].contacts.find(p => p.id == friendId);
-      //   }
-      //   else {
-      //     friendId = conversation_mates[0].id;
-      //     contact = conversation_mates[1].contacts.find(p => p.id == friendId);
-      //   }
-      //   return (
-      //     <div key={contact.name} className="convo" onClick={() => props.changeConversationId(c.id)}>
-      //       <img className="convos-pic" src="cat_sam.jpeg" alt="profile_pic" />
-      //       <div className="convo-message-wrap">
-      //         <div id="convo-name">{contact.name}</div>
-      //         <img src="pencil.png" alt="pencil" style={{ width: '3vw', height: '5vh' }} onClick={() => toggleEditContact(c)} />
-      //         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}>
-      //           {c.messages.length > 0 && c.messages.at(-1).type === 'text' && <div id="convo-last-message">
-      //             {c.messages.length > 0 && c.messages.at(-1).content.length > 20 ? c.messages.at(-1).content.slice(0, 20) + "..." : c.messages.at(-1).content}
-      //           </div>}
-      //           {c.messages.length > 0 && c.messages.at(-1).type === 'video' && <div id="convo-last-message">video</div>}
-      //           {c.messages.length > 0 && c.messages.at(-1).type === 'recording' && <div id="convo-last-message">voice recording</div>}
-      //           {c.messages.length > 0 && c.messages.at(-1).type === 'img' && <div id="convo-last-message">image</div>}
-      //           {c.messages.length > 0 && <div className="convo-time">{c.messages.at(-1).Created}</div>}
-      //         </div>
-      //       </div>
-      //     </div>
-      //   );
-      // })
-
-
-        return props.contacts.map(c => {
-          // let contact = props.contacts.find(c2 => c2.id === c.contactId)
-          return (
-            <div key={c.name} className="convo" onClick={() => props.changeConversationId(c.id)}>
-              <img className="convos-pic" src="cat_sam.jpeg" alt="profile_pic" />
-              <div className="convo-message-wrap">
-                <div id="convo-name">{c.name}</div>
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}>
-                   <div id="convo-last-message">
-                     {c.last ?  c.last :  "..."}
-                     </div>
+    if (props.conversations.length > 0 && props.contacts.length > 0) {
+      return props.conversations.map(c => {
+        let contact = c.users.find(c2 => c2.id !== props.online.id)
+        contact = props.contacts.find(c2 => c2.id === contact.id)
+        return (
+          <div key={contact.name} className="convo" onClick={() => props.changeConversationId(contact.id)}>
+            <img className="convos-pic" src="cat_sam.jpeg" alt="profile_pic" />
+            <div className="convo-message-wrap">
+              <div id="convo-name">{contact.name}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}>
+                <div id="convo-last-message">
+                  {contact.last ? contact.last : "..."}
                 </div>
-                <img src="pencil.png" alt="pencil" style={{ width: '2vw', height: '4vh' }} onClick={() => toggleEditContact(c.id)} />
               </div>
+              <img src="pencil.png" alt="pencil" style={{ width: '2vw', height: '4vh' }} onClick={() => toggleEditContact(contact.id)} />
             </div>
-          );
-        })
+          </div>
+        );
+      })
     }
     else {
       return <div>Loading...</div>

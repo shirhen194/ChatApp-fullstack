@@ -24,47 +24,19 @@ function App() {
   const [token, setToken] = useState("");
   // const [onlineContacts, setContacts] = useState(dummyUsers);
 
-  // useEffect(() => {
-  //   let mounted = true;
-  //   getOnline()
-  //     .then(onlineNow => {
-  //       if(mounted) {
-  //         setStateOnline(onlineNow)
-  //       }
-  //     })
-  //   return () => mounted = false;
-  // }, [online])
-
-  // useEffect(() => {
-  //   let mounted = true;
-  //   getAllOnlineConversations(token)
-  //     .then(convos => {
-  //       if(mounted) {
-  //         setConversations(convos)
-  //         console.log("setConversations")
-  //         // setShouldUpdate(false)
-  //       }
-  //     })
-  //   return () => mounted = false;
-  // }, [shouldUpdate])
-
 
     useEffect(() => {
-    // let mounted = true;
 
     async function oConvos() {
     if (token != '') {
       //service
-    getAllOnlineConversations(token)
+    await getAllOnlineConversations(token)
       .then(convos => {
-        // if(mounted) {
           setConversations(convos)                                       
-          // setShouldUpdate(false)
-        // }
       })
     }}
     oConvos()
-  }, [token])
+  }, [token, shouldUpdate])
 
   useEffect(() => {
     // let mounted = true;
@@ -75,14 +47,13 @@ function App() {
         .then(contacts => {
           // if(mounted) {
           setContacts(contacts)
-          // console.log(contacts)
           // setShouldUpdate(false)
           // }
         })
     }}
     gContacts()
     // return () => mounted = false;
-  }, [token, shouldUpdate])
+  }, [token, shouldUpdate, conversations])
 
 
   // componentDidMount = async () => {
@@ -120,6 +91,7 @@ function App() {
         .then(convos => {
           setConversations(convos)
         })
+      setShouldUpdate(!shouldUpdate);
     }
     else {
       console.log("A bug occured! Trying to add a message to an undefined conversation!")
@@ -154,8 +126,13 @@ function App() {
   const addConversation = async (contactName) => {
     let contact = contacts.find(c => c.name === contactName)
     // let user = users.find(u => u.id === localStorage.getItem('userId'))
-    await conversationInvitation({ from: online.id, to: contact.id, server: "https://localhost:7005" }, token)
+    await conversationInvitation({ from: online.id, to: contact.id, server: contact.server }, token)
     setShouldUpdate(!shouldUpdate)
+    await getAllOnlineConversations(token)
+      .then(convos => {
+          setConversations(convos)                                       
+      })
+    
   }
 
   const editContact = async (editContactId, contactName, contactServerName) => {

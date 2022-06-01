@@ -1,5 +1,5 @@
 import '../App.css';
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import React from 'react';
 
 function LeftMessage(props) {
@@ -65,8 +65,9 @@ const Messages = React.forwardRef((props, ref) => {
         else
             return <LeftMessage key={key} content={content} type={type} Created={Created} />
     }
+    // props.setUpdateConvo()
+    let messages = props.conversation.messages;
 
-    const messages = props.conversation.messages;
     const {messagesEndRef} = props;
     const scrollToBottom = () => {
         messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
