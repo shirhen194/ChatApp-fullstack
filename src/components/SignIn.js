@@ -51,13 +51,13 @@ function SignIn(props) {
       // )
     // } else {
       return (
-        <Link to='/chat'>
+        // <Link to='/chat'>
           <input type="button"
             value="WELCOME"
             onKeyDown={() => handleSubmit()}
             onClick={() => handleSubmit()}
           />
-        </Link>
+        // </Link>
       )
     // }
     // return ''

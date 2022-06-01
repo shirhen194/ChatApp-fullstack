@@ -53,6 +53,7 @@ function Chat(props) {
         modals={modals}
         scrollToBottom={scrollToBottom}
         onlineId={props.online.id}
+        onlineToken={props.online.token}
         contactId={props.contactId}
         ></ChatInput>
     </div>

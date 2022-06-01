@@ -16,7 +16,7 @@ import { register, getUserById } from './services/users.js'
 function App() {
 
   // const [users, setUsers] = useState(dummyUsers);
-  const [online, setStateOnline] = useState({id:'s'});
+  const [online, setStateOnline] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [shouldUpdate, setShouldUpdate] = useState(false);
@@ -180,20 +180,25 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Routes go here v */}
-        <Route path="/" element={
+        {/* <Route path="/" element={
           <SignIn
             setOnline={setOnline}
             setToken={setToken}
             setStateOnline={setStateOnline}
-          />}>
-        </Route>
-        {!online && <Route path="/chat" element={
-          <SignIn
-            setOnline={setOnline}
             token={token}
+            online={online}
+          />}>
+        </Route> */}
+        {!online && <Route path="/" element={
+          <SignIn
+          setOnline={setOnline}
+          setToken={setToken}
+          setStateOnline={setStateOnline}
+          token={token}
+          online={online}
           />}>
         </Route>}
-        {online && <Route path="/chat" element={
+        {online && <Route path="/" element={
           <ChatScreen
             online={online}
             conversations={conversations}
