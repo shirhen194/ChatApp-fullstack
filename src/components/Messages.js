@@ -76,7 +76,7 @@ const Messages = React.forwardRef((props, ref) => {
 
     return (
         <div>
-            {props.conversation.messages.map(({ user, type, content, Created }, index) => createMessage(props.self, user, content, index, type, Created))}
+            {props.conversation.messages.map(({ author, type, content, created }, index) => createMessage(props.self, author.id, content, index, type, created))}
             <div ref={messagesEndRef} style={{height: '8px'}} />
         </div>
 

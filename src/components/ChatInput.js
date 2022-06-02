@@ -9,13 +9,13 @@ import { getOnline } from '../services/users';
 import { getConverationMessages, transfer } from '../services/conversations.js'
 
 function ChatInput(props) {
-  let { modals, scrollToBottom, setUpdateConvo, setUpdate } = props;
+  let { modals, scrollToBottom, setUpdateConvo, setUpdate, contactId } = props;
 
   const message = useRef("");
   const [ connection, setConnection ] = useState(null);
   //const [input, setInput]= useState("");
   // const sendMessageAndClearInput= ()=>{
-  //   props.addMessage(input.current.value,props.conversation_id, 'text');
+  //   props.addMessage(input.current.value,props.conversation_id, 'text', contactId);
   //  setUpdateConvo()
   //   setInput(()=>"")
   // }
@@ -75,7 +75,7 @@ const sendMessage = async () => {
             placeholder="Type your message here..."
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
-                props.addMessage(message.current.value, props.conversation_id, 'text')
+                props.addMessage(message.current.value, props.conversation_id, 'text', contactId)
                 transfer(message.current.value, props.onlineToken) 
                 sendMessage(props.onlineId, props.contactId)
                 message.current.value = ""
@@ -86,7 +86,7 @@ const sendMessage = async () => {
           />
           <Button variant="secondary"
             onClick={() => {
-              props.addMessage(message.current.value, props.conversation_id, 'text')
+              props.addMessage(message.current.value, props.conversation_id, 'text', contactId)
               transfer(message.current.value, props.onlineToken) 
               sendMessage(props.onlineId, props.contactId)
               message.current.value = ""

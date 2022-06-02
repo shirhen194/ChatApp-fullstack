@@ -45,29 +45,14 @@ function App() {
       //service
       await getContacts(token)
         .then(contacts => {
-          // if(mounted) {
           setContacts(contacts)
-          // setShouldUpdate(false)
-          // }
         })
     }}
     gContacts()
-    // return () => mounted = false;
-  }, [token, shouldUpdate, conversations])
-
-
-  // componentDidMount = async () => {
-  //   let forcast = await fetch("https://localhost:5095/WeatherForecast")
-  //   let data = await forcast.json()
-  //   console.log(data);
-  // }
-
-
-  // let onlineUsers = users.filter(user => online.includes(user.id))
-
+  }, [token, shouldUpdate])
 
   // add message to the array of messages to the right conversation.
-  const addMessage = async (message, c_id, type) => {
+  const addMessage = async (message, c_id, type, contactId) => {
     // TODO: change c_index to find the right index by c_id
     //TODO: add user information to new message
     //time and date stamp
@@ -85,7 +70,7 @@ function App() {
       ConversationId: c_id + ""
     }
     if (c_index !== -1 && new_message.content !== '') {
-      await sendMessage(new_message, online.id, token);
+      await sendMessage(new_message, contactId, token);
       setShouldUpdate(!shouldUpdate);
       await getAllOnlineConversations(token)
         .then(convos => {
@@ -179,7 +164,7 @@ function App() {
           <ChatScreen
             online={online}
             conversations={conversations}
-            setOnline={setOnline}
+            setOnline={setStateOnline}
             addConversation={addConversation}
             addContact={addContactByName}
             addMessage={addMessage}

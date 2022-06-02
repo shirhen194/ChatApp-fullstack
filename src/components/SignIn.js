@@ -26,42 +26,13 @@ function SignIn(props) {
   }
 
   const renderSubmit = () => {
-    // await login(form).then(res => {
-    //   if (res.data.errors) {
-    //     setErrors(res.data.errors)
-    //   } else {
-    //     setOnline(res.data.user.id)
-    //     props.setUser(res.data.user)
-    //     props.history.push('/chat')
-    //   }
-    // findMatch().then(res => {
-    //   console.log("findMatch")
-    //   console.log(res)
-    // }).catch(err => {
-    //   console.log("err")
-    //   console.log(err)
-    // })
-    // if (Object.keys(findMatch()).length > 0) {
-      // return (
-      //   <input type="button"
-      //     value="WELCOME"
-      //     // onKeyDown={() => handleSubmit(findMatch())}
-      //     onKeyDown={() => handleSubmit()}
-      //     onClick={() => handleSubmit()}
-      //   />
-      // )
-    // } else {
       return (
-        // <Link to='/chat'>
           <input type="button"
             value="WELCOME"
             onKeyDown={() => handleSubmit()}
             onClick={() => handleSubmit()}
           />
-        // </Link>
       )
-    // }
-    // return ''
   }
 
   const findMatch = async () => {

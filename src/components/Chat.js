@@ -36,15 +36,13 @@ function Chat(props) {
         //service
         await getConveration(contactId, props.online.token).then((res) => {
           setConversation(res)
-          // console.log("conversation_id")
-          // console.log(res.messages)
         })
       }
     }
     oConvos()
   }, [contactId, conversation_id, online, props, props.conversations, updateConvo])
-  // console.log(conversation)
-  // console.log(conversation.messages)
+
+
   return (
     <div className='chat-wrapper'>
       {rec && <ModalInput c_id={conversation_id} handleClose={modals.closeRec} addMessage={addMessage} rec={rec} type="recording" />}
@@ -61,7 +59,7 @@ function Chat(props) {
         <Messages
           conversation_id={props.conversation_id}
           conversations={props.conversations}
-          self={props.online.displayName}
+          self={props.online.id}
           messagesEndRef={messagesEndRef}
           conversation={conversation}
           setUpdateConvo={() => {
