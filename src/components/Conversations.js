@@ -52,12 +52,17 @@ function Conversations(props, changeConversationId) {
     setErrContact("")
     props.addContact(contactName.current.value, contactId.current.value, contactServerName.current.value)
     setShowA(false)
+    props.setUpdateConvo()
     // }
   }
 
   const removeContact = async (id) => {
-    await deleteContact(id, props.token)
+    await deleteContact(id, props.token).catch(err => {
+      console.log(err)
+    })
+    props.setUpdateConvo()
   }
+
 
   return (
     <Container>
@@ -119,7 +124,7 @@ function Conversations(props, changeConversationId) {
         <Toast.Body>
           <Form.Group className="mb-3" controlId="formBasicEmail">
 
-            <Form.Label>Enter friend's contact name (display name):</Form.Label>
+            <Form.Label>Enter friend's contact id:</Form.Label>
             <Form.Control type="id" placeholder="Display name" ref={contactName} />
           </Form.Group>
           <div className="error" style={{ color: 'red' }}>{errorContact}</div>
@@ -127,6 +132,7 @@ function Conversations(props, changeConversationId) {
             props.addConversation(contactName.current.value)
             contactName.current.value = ""
             toggleConvoModal(false)
+            props.setUpdateConvo()
           }}>
             Add
           </Button>
@@ -151,7 +157,8 @@ function Conversations(props, changeConversationId) {
           <div className="error" style={{ color: 'red' }}>{errorContact}</div>
           <Button variant="primary" type="submit" onClick={() => {
             props.editContact(editContactId, contactName.current.value, contactServerName.current.value)
-            setEditContact(!editContact)
+            setEditContact(false)
+            props.setUpdateConvo()
           }}>
             Add
           </Button>

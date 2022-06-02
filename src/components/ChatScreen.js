@@ -27,7 +27,7 @@ function ChatScreen(props) {
     })
   }
 
-  const setUpdateConvo = async () => {
+  const setUpdateConvo = () => {
     // await changeConversationId(contactId)
     setUpdate(!updateConvo)
   }
@@ -59,13 +59,31 @@ function ChatScreen(props) {
     gContacts()
   }, [props.token, updateConvo])
 
+  const isContact = contacts.find(contact => contact.id === contactId)
+
   return (
     <div className='web-chat'>
-      <div className='conversations'><Conversations changeConversationId={changeConversationId} {...props} contacts={contacts} /></div>
-      {conversation_id == 0 &&
+      <div className='conversations'>
+        <Conversations
+          changeConversationId={changeConversationId}
+          contacts={contacts}
+          addConversation={props.addConversation}
+          editContact={props.editContact}
+          deleteContact={props.deleteContact}
+          setUpdateConvo={setUpdateConvo}
+          conversations={props.conversations}
+          conversation_id={conversation_id}
+          conversation={conversation}
+          online={props.online}
+          setOnline={props.setOnline}
+          addContact={props.addContact}
+          token={props.token}
+        />
+      </div>
+      {!isContact &&
         <div className='empty-conversation'><WelcomeScreenConversation></WelcomeScreenConversation></div>
       }
-      {conversation_id !== 0 &&
+      {isContact &&
         <div className='chat'>
           <Chat
             conversation_id={conversation_id}
