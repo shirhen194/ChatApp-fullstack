@@ -19,7 +19,6 @@ function ChatHeader(props){
         }
     }
 
-
     return(
         <div>
             <img className='chat-header-img' src="cat_sam.jpeg" alt=""/>
