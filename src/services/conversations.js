@@ -78,14 +78,18 @@ export function conversationInvitation(invitation, token) {
 }
 
 
-export function transfer(message, token) {
+export function transfer(message, online, contactId) {
   return fetch('https://localhost:7005/api/transfer', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': "Bearer " + token
+      'Authorization': "Bearer " + online.token
     },
-    body: JSON.stringify(message)
+    body: JSON.stringify({
+      "to": contactId,
+      "from": online.id,
+      "content": message
+    })
   })
     .then(data => data.json())
 }

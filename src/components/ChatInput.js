@@ -27,7 +27,7 @@ function ChatInput(props) {
         .build();
 
     setConnection(newConnection);
-}, []);
+}, [props.contactId]);
 
 
 useEffect(() => {
@@ -44,7 +44,7 @@ useEffect(() => {
           })
           .catch(e => console.log('Connection failed: ', e));
   }
-}, [connection]);
+}, [connection, props.onlineId, props.onlineToken]);
 
 
 const sendMessage = async () => {
@@ -76,7 +76,7 @@ const sendMessage = async () => {
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
                 props.addMessage(message.current.value, props.conversation_id, 'text', contactId)
-                transfer(message.current.value, props.onlineToken) 
+                transfer(message.current.value, props.online, props.contactId) 
                 sendMessage(props.onlineId, props.contactId)
                 message.current.value = ""
                 scrollToBottom()
@@ -87,7 +87,7 @@ const sendMessage = async () => {
           <Button variant="secondary"
             onClick={() => {
               props.addMessage(message.current.value, props.conversation_id, 'text', contactId)
-              transfer(message.current.value, props.onlineToken) 
+              transfer(message.current.value, props.online, props.contactId) 
               sendMessage(props.onlineId, props.contactId)
               message.current.value = ""
               scrollToBottom()
