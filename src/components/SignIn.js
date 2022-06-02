@@ -11,6 +11,7 @@ function SignIn(props) {
 
   const [form, setForm] = useState({})
   const [errors, setErrors] = useState({})
+  
 
   const setField = (field, value) => {
     setForm({
@@ -25,92 +26,57 @@ function SignIn(props) {
   }
 
   const renderSubmit = () => {
-    // await login(form).then(res => {
-    //   if (res.data.errors) {
-    //     setErrors(res.data.errors)
-    //   } else {
-    //     setOnline(res.data.user.id)
-    //     props.setUser(res.data.user)
-    //     props.history.push('/chat')
-    //   }
-    // findMatch().then(res => {
-    //   console.log("findMatch")
-    //   console.log(res)
-    // }).catch(err => {
-    //   console.log("err")
-    //   console.log(err)
-    // })
-    // if (Object.keys(findMatch()).length > 0) {
-      // return (
-      //   <input type="button"
-      //     value="WELCOME"
-      //     // onKeyDown={() => handleSubmit(findMatch())}
-      //     onKeyDown={() => handleSubmit()}
-      //     onClick={() => handleSubmit()}
-      //   />
-      // )
-    // } else {
       return (
-        <Link to='/chat'>
           <input type="button"
             value="WELCOME"
             onKeyDown={() => handleSubmit()}
             onClick={() => handleSubmit()}
           />
-        </Link>
       )
-    // }
-    // return ''
   }
 
   const findMatch = async () => {
     const { name, password } = form
-    console.log("hi im here")
     const newErrors = {}
     if (!name) {
-      console.log("hi im here 1")
       return newErrors
     }
 
-    console.log("hi im here 2")
 
     //service
     await getUserById(name).then(res => {
-      console.log(props.token)
-      console.log("props.token")
-      if (res.data.length > 0) {
-        console.log(res.data + "res.data")
-        console.log(res.token + "res.token")
+      if (res) {
         // setToken(res.token)
-        if (res.data[0].password !== password.current.value) {
+        if (res.password !== password) {
           newErrors.password = 'Incorrect Password'
         }
       } else {
         newErrors.name = 'no account with these credentials!'
       }
+    }).catch(err => {
+      newErrors.name = 'no account with these credentials!'
     })
-
-    return newErrors
+    // return newErrors
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return newErrors
+    } 
   }
 
   const handleSubmit = e => {
-    // const newErrors = findMatch()
-    // if (Object.keys(newErrors).length > 0) {
-    //   setErrors(newErrors)
-    // } else {
-    //  // service
+     // service
+    findMatch().then(newErrors => {
+    if (!newErrors || Object.keys(newErrors).length == 0) {
       login(form.name, form.password).then(res => {
         props.setToken(res.token)
-        if (res.data.errors) {
-          setErrors(res.data.errors)
-        }
-        props.setStateOnline(res.userName)
+        props.setStateOnline(res)
         // else {
         //   props.setOnline(res.data.user.id)
         // }
+      }).catch((err, res) => {
+        console.log("err in login")
       })
-
-    // }
+    }})
     // return false;
   }
 

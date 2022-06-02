@@ -6,14 +6,16 @@ import { Dropdown, DropdownButton, Stack } from 'react-bootstrap';
 import { useRef, useState } from "react";
 
 function ChatInput(props) {
+  let { modals, scrollToBottom, setUpdateConvo, setUpdate, contactId } = props;
+
   const message = useRef("");
   //const [input, setInput]= useState("");
   // const sendMessageAndClearInput= ()=>{
-  //   props.addMessage(input.current.value,props.conversation_id, 'text');
+  //   props.addMessage(input.current.value,props.conversation_id, 'text', contactId);
+  //  setUpdateConvo()
   //   setInput(()=>"")
   // }
 
-  let { modals, scrollToBottom } = props;
   return (
     <div className='message-input'>
       <>
@@ -22,18 +24,20 @@ function ChatInput(props) {
             className="me-auto"
             placeholder="Type your message here..."
             onKeyPress={(e) => {
-              if (e.key === 'Enter' ) {
-                props.addMessage(message.current.value, props.conversation_id, 'text')
+              if (e.key === 'Enter') {
+                props.addMessage(message.current.value, props.conversation_id, 'text', contactId)
                 message.current.value = ""
                 scrollToBottom()
+                setUpdateConvo()
               }
             }}
           />
           <Button variant="secondary"
             onClick={() => {
-              props.addMessage(message.current.value, props.conversation_id, 'text')
+              props.addMessage(message.current.value, props.conversation_id, 'text', contactId)
               message.current.value = ""
               scrollToBottom()
+              setUpdateConvo()
             }}
           >Send</Button>
           <div className="vr" />

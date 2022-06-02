@@ -5,42 +5,82 @@ import Chat from './Chat';
 import React from 'react';
 import WelcomeScreenConversation from './WelcomeScreenConversation';
 import { getConveration } from '../services/conversations';
-class ChatScreen extends React.Component {
+import { useState, useRef, useEffect } from 'react';
+import { getContacts } from '../services/contacts';
 
-  constructor() {
-    super()
-    this.state = { conversation_id: 0, conversation: {} }
-    this.changeConversationId = this.changeConversationId.bind(this)
-  }
+function ChatScreen(props) {
 
-  changeConversationId = async (c_id) => {
-    await getConveration(c_id, this.props.token).then((res) => {
-      this.setState({ conversation_id: res.data.id, conversation: res.data })
+  const [conversation, setConversation] = useState(props.conversation);
+  const [updateConvo, setUpdate] = useState(false);
+  const [contactId, setContactId] = useState('');
+  const [conversation_id, setConversation_id] = useState(0);
+  const [contacts, setContacts] = useState(props.contacts);
+
+
+
+  const changeConversationId = async (c_id) => {
+    await getConveration(c_id, props.token).then((res) => {
+      setConversation(res)
+      setUpdate(true)
+      setContactId(c_id)
+      setConversation_id(res.id)
     })
   }
 
-  render() {
-    return (
-      <div className='web-chat'>
-        <div className='conversations'><Conversations changeConversationId={this.changeConversationId} {...this.props} /></div>
-        {this.state.conversation_id == 0 &&
-          <div className='empty-conversation'><WelcomeScreenConversation></WelcomeScreenConversation></div>
-        }
-        {this.state.conversation_id !== 0 &&
-          <div className='chat'>
-            <Chat
-              conversation_id={this.state.conversation_id}
-              conversations={this.props.conversations}
-              addMessage={this.props.addMessage}
-              online={this.props.online}
-              conversation={this.state.conversation}
-            >
-            </Chat>
-          </div>
-        }
-      </div>
-    );
+  const setUpdateConvo = async () => {
+    // await changeConversationId(contactId)
+    setUpdate(!updateConvo)
   }
+
+  useEffect(() => {
+    async function oConvos() {
+      if (props.token != '' && contactId != '') {
+        //service
+        await getConveration(contactId, props.token).then((res) => {
+          setConversation(res)
+          setConversation_id(res.id)
+        })
+      }
+    }
+    oConvos()
+  }, [contactId, props.token, updateConvo])
+
+
+  useEffect(() => {
+    async function gContacts() {
+      if (props.token != '') {
+        //service
+        await getContacts(props.token)
+          .then(contacts => {
+            setContacts(contacts)
+          })
+      }
+    }
+    gContacts()
+  }, [props.token, updateConvo])
+
+  return (
+    <div className='web-chat'>
+      <div className='conversations'><Conversations changeConversationId={changeConversationId} {...props} contacts={contacts} /></div>
+      {conversation_id == 0 &&
+        <div className='empty-conversation'><WelcomeScreenConversation></WelcomeScreenConversation></div>
+      }
+      {conversation_id !== 0 &&
+        <div className='chat'>
+          <Chat
+            conversation_id={conversation_id}
+            conversations={props.conversations}
+            addMessage={props.addMessage}
+            online={props.online}
+            conversation={conversation}
+            contactId={contactId}
+            setUpdateConvo={setUpdateConvo}
+          >
+          </Chat>
+        </div>
+      }
+    </div>
+  );
 }
 
 export default ChatScreen;
