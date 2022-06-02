@@ -80,6 +80,7 @@ function Chat(props) {
           props.setUpdateConvo()
           setUpdateConvo(!updateConvo)
         }}
+        online={props.online}
       ></ChatInput>
     </div>
   );
