@@ -21,7 +21,7 @@ export function getConverationMessages(contactId, token) {
 }
 
 export function getConveration(contactId, token) {
-  return fetch('https://localhost:7005/api/contacts/' + contactId + '/conversation', {
+  return fetch('https://localhost:7005/api/Conversation/' + contactId, {
     method: 'GET',
     headers: {
       'Authorization': "Bearer " + token

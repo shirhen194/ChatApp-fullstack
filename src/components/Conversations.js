@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import Toast from 'react-bootstrap/Toast'
 import { useRef, useState } from 'react'
 import Form from 'react-bootstrap/Form';
-
+import { deleteContact } from '../services/contacts'
 // import { BrowserRouter as Router, Link, Route } from 'react-router-dom'
 
 function Conversations(props, changeConversationId) {
@@ -53,6 +53,10 @@ function Conversations(props, changeConversationId) {
     props.addContact(contactName.current.value, contactId.current.value, contactServerName.current.value)
     setShowA(false)
     // }
+  }
+
+  const removeContact = async (id) => {
+    await deleteContact(id, props.token)
   }
 
   return (
@@ -166,17 +170,23 @@ function Conversations(props, changeConversationId) {
       return props.conversations.map(c => {
         let contact = c.users.find(c2 => c2.id !== props.online.id)
         contact = props.contacts.find(c2 => c2.id === contact.id)
+        if (!contact) {
+          return null
+        }
         return (
-          <div key={contact.name} className="convo" onClick={() => props.changeConversationId(contact.id)}>
+          <div key={contact ? contact.name : c.id} className="convo" onClick={() => props.changeConversationId(contact.id)}>
             <img className="convos-pic" src="cat_sam.jpeg" alt="profile_pic" />
             <div className="convo-message-wrap">
-              <div id="convo-name">{contact.name}</div>
+              <div id="convo-name">{contact && contact.name}</div>
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}>
                 <div id="convo-last-message">
-                  {contact.last ? contact.last : "..."}
+                  {contact && contact.last ? contact.last : "..."}
                 </div>
               </div>
+              <div>
               <img src="pencil.png" alt="pencil" style={{ width: '2vw', height: '4vh' }} onClick={() => toggleEditContact(contact.id)} />
+              <img className="remove-img" src="trash.png" alt="Remove" style={{ width: '2vw', height: '4vh' }} onClick={() => removeContact(contact.id)} />
+              </div>
             </div>
           </div>
         );

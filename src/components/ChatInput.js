@@ -6,12 +6,12 @@ import { Dropdown, DropdownButton, Stack } from 'react-bootstrap';
 import { useRef, useState } from "react";
 
 function ChatInput(props) {
-  let { modals, scrollToBottom, setUpdateConvo, setUpdate } = props;
+  let { modals, scrollToBottom, setUpdateConvo, setUpdate, contactId } = props;
 
   const message = useRef("");
   //const [input, setInput]= useState("");
   // const sendMessageAndClearInput= ()=>{
-  //   props.addMessage(input.current.value,props.conversation_id, 'text');
+  //   props.addMessage(input.current.value,props.conversation_id, 'text', contactId);
   //  setUpdateConvo()
   //   setInput(()=>"")
   // }
@@ -25,7 +25,7 @@ function ChatInput(props) {
             placeholder="Type your message here..."
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
-                props.addMessage(message.current.value, props.conversation_id, 'text')
+                props.addMessage(message.current.value, props.conversation_id, 'text', contactId)
                 message.current.value = ""
                 scrollToBottom()
                 setUpdateConvo()
@@ -34,7 +34,7 @@ function ChatInput(props) {
           />
           <Button variant="secondary"
             onClick={() => {
-              props.addMessage(message.current.value, props.conversation_id, 'text')
+              props.addMessage(message.current.value, props.conversation_id, 'text', contactId)
               message.current.value = ""
               scrollToBottom()
               setUpdateConvo()

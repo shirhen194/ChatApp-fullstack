@@ -73,7 +73,7 @@ function ModalInput(props) {
             Close
           </Button>
           <Button variant="primary" onClick={() => {
-            addMessage(content, c_id, type);
+            addMessage(content, c_id, type, props.contactId);
             handleClose()
           }}>
             Send Message
